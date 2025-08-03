@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./prisma/client"
 }
 
 
@@ -8,14 +9,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PositionStatus {
+  open
+  closed
+  liquidated
+}
+
+enum PositionSide {
+  long
+  short
+}
 
 model Position {
-  id        String   @id @default(uuid())
-  userId    String
-  symbol    String
-  side      String
-  entry     Float
-  leverage  Int
-  createdAt DateTime @default(now())
+  id           String         @id @default(uuid())
+  userId       String
+  symbol       String
+  side         String
+  entry        Float
+  leverage     Int
+  deposit      Float
+  quantity     Float
+  takeProfit   Float?
+  stopLoss     Float?
+  liquidation  Float?
+  pnl          Float?
+  status       PositionStatus @default(open)
+  closePrice   Float?
+  closedAt     DateTime?
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
