@@ -1,7 +1,7 @@
 import { createConsumer } from '../common/kafka';
 import { prisma } from '../common/prisma';
 import { redis } from '../common/redis';
-import { PositionStatus } from  '@prisma/client'
+import { PositionStatus } from '../../prisma/client';
 import dotenv from 'dotenv';
 
 dotenv.config({

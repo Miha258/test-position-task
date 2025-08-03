@@ -3,7 +3,7 @@ import { prisma } from '../common/prisma';
 import { redis } from '../common/redis';
 import { Kafka } from 'kafkajs';
 import dotenv from 'dotenv';
-import {PositionSide} from "@prisma/client";
+import { PositionSide } from  '../../prisma/client'
 
 dotenv.config({
     path: `${__dirname}/../.env`
