@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>WebSocket Client</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+<h1>WebSocket Position Client</h1>
+<div>
+    <label>User ID: <input type="text" id="userId" /></label>
+    <button onclick="register()">Register</button>
+</div>
+<div id="messages" style="margin-top: 20px;"></div>
+
+<script>
+    const socket = io('http://localhost:3000');
+
+    socket.on('connect', () => {
+        console.log('Connected to server', socket.id);
+    });
+
+    socket.on('position-update', (data) => {
+        console.log('📩 Position update received:', data);
+        const div = document.createElement('div');
+        div.textContent = `Event: ${data.event} | Position ID: ${data.positionId} | Symbol ${data.symbol} | PnL: ${data.pnl} | Liquidation: ${data.liquidation}`;
+        document.getElementById('messages').appendChild(div);
+    });
+
+    function register() {
+        const userId = document.getElementById('userId').value;
+        if (userId) {
+            socket.emit('register', { userId });
+            console.log(`📤 Registered userId ${userId}`);
+        }
+    }
+</script>
+</body>
+</html>
