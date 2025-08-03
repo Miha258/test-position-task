@@ -1,18 +1,22 @@
 {
   "name": "event-handlers",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
-    "opened": "ts-node ./position-opened-handler/index.ts",
+    "opened": "ts-node position-opened-handler/index.ts",
     "closed": "ts-node ./position-closed-handler/index.ts",
     "updated": "ts-node ./position-updated-handler/index.ts",
     "liquidated": "ts-node ./position-liquidated-handler/index.ts"
   },
   "dependencies": {
-    "kafkajs": "^2.2.4"
+    "@prisma/client": "^6.13.0",
+    "dotenv": "^17.2.1",
+    "ioredis": "^5.6.1",
+    "kafkajs": "^2.2.4",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1",
-    "typescript": "^5.3.3"
+    "@types/ws": "^8.18.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

@@ -1,5 +1,4 @@
 import { createConsumer } from '../common/kafka';
-import { prisma } from '../common/prisma';
 import { redis } from '../common/redis';
 
 createConsumer('position-opened', 'position-opened-group', async ({ message }) => {
@@ -9,24 +8,34 @@ createConsumer('position-opened', 'position-opened-group', async ({ message }) =
     const data = JSON.parse(payload);
     console.log('📥 [position-opened]', data);
 
-    const { userId, symbol, id, ...positionData } = data;
-    const created = await prisma.position.create({
-        data: { id, userId, symbol, ...positionData },
-    });
+    const { userId, id: positionId, entry, leverage, symbol } = data;
 
-    const hashKey = `position:${created.id}`;
+    const hashKey = `position:${positionId}`;
     const setKey = `positions:${userId}`;
+    const symbolSetKey = `positions:${symbol.toLowerCase()}`;
 
     await redis
         .multi()
         .hset(hashKey, {
-            ...created,
-            entry: String(created.entry),
-            leverage: String(created.leverage),
+            ...data,
+            entry: String(entry),
+            leverage: String(leverage),
         })
-        .expire(hashKey, 86400)
-        .sadd(setKey, created.id)
+        .sadd(setKey, positionId)
+        .sadd(symbolSetKey, positionId)
         .exec();
 
-    console.log(`✅ Position ${created.id} created and cached`);
+    const pubData = {
+        event: 'position-opened',
+        userId,
+        positionId,
+        entry,
+        leverage,
+        symbol,
+        data,
+        timestamp: Date.now(),
+    };
+
+    await redis.publish('ws-update', JSON.stringify(pubData));
+    console.log(`✅ Position ${positionId} created, cached, and published to ws-update`);
 });
