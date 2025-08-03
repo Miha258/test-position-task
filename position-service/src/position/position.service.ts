@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
-import { Position } from '../prisma/client';
+import { Position } from '../../../prisma/client';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { PositionRepository } from './position.repository';
